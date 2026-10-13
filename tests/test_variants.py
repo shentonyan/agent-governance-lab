@@ -75,3 +75,31 @@ def test_all_variants_defined_for_both_langs() -> None:
     assert langs == {"en", "zh"}
     for v in VARIANTS.values():
         make_variant(EN if v.lang == "en" else ZH, v.vid)
+
+
+# Same layout as the upstream axioms file (plain "Label:" lines, quoted bullets); invented wording.
+LABELS = """Alpha:
+- "Alpha clause one."
+
+Boundless Care:
+- "Be gentle. Show compassionate concern for everyone."
+- "Let compassion grow with ability."
+
+Omega:
+- "Omega mentions care of tools."
+"""
+
+
+def test_label_style_section() -> None:
+    c1 = make_variant(LABELS, "C1")
+    assert "Boundless Care:" in c1 and "compassion" not in c1.split("Omega:")[0].lower()
+    assert "caring concern" in c1 and "Let care grow" in c1
+    c3 = make_variant(LABELS, "C3")
+    assert "Boundless Compassion:" in c3 and "caring concern" in c3
+    assert make_variant(LABELS, "C4") == LABELS  # C4 reproduces the original wording
+    e1 = make_variant(LABELS, "E1")
+    assert "Axiom 4:" in e1 and "Boundless" not in e1
+    for vid in ("C1", "C2", "C3", "E1"):
+        out = make_variant(LABELS, vid)
+        assert out.startswith(LABELS.split("Boundless")[0])
+        assert out.endswith('- "Omega mentions care of tools."\n')

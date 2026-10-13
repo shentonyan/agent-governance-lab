@@ -14,3 +14,7 @@
 
 Scope: one model, one machine, short generations. This shows seeding is repeatable here;
 it does not show repeatability across hardware or Ollama versions.
+
+## Variant generation on the pinned upstream file
+
+English variants C1-C4 and E1 were generated from the axioms file at the pinned rules revision. C4 (heading Care, body compassion) is byte-identical to the original; the others differ only inside the axiom-4 section.

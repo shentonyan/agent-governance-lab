@@ -10,7 +10,7 @@
   <img alt="python" src="https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white">
   <img alt="typing" src="https://img.shields.io/badge/mypy-strict-2a6db2">
   <img alt="lint" src="https://img.shields.io/badge/lint-ruff-261230">
-  <img alt="tests" src="https://img.shields.io/badge/tests-30%20passing-brightgreen">
+  <img alt="tests" src="https://img.shields.io/badge/tests-31%20passing-brightgreen">
   <img alt="status" src="https://img.shields.io/badge/status-M1%20core-orange">
 </p>
 
@@ -43,7 +43,7 @@ No experiment results exist yet. What exists is the core, and it has been run en
 |---|---|
 | Hash-chained run ledger | implemented, tested |
 | Seeded, loopback-only Ollama backend | implemented, tested, run against a real model |
-| Axiom-4 wording variants (en / zh) | implemented, tested on synthetic text only |
+| Axiom-4 wording variants (en / zh) | en checked against the pinned upstream axioms file (C4 reproduces it byte for byte); zh tested on synthetic text only |
 | Statistics: Wilson, exact McNemar, Holm, cluster bootstrap, equivalence, phi | implemented, tested |
 | M0 self-check and end-to-end smoke run | passed on one machine, see below |
 | Experiments 1–3 | designed, not run; exp 1 has an unfrozen [draft pre-registration](docs/experiments/exp01/PREREG.md) |

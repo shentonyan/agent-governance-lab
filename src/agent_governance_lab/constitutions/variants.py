@@ -63,40 +63,55 @@ def _subst(text: str, rules: list[tuple[str, str]]) -> tuple[str, int]:
     return text, total
 
 
+# Plain label line such as "Boundless Care:" (the upstream axioms file uses this form).
+_LABEL_RE = re.compile(r"^([^\s#>\-*\"'][^:：\n]*?)([:：])\s*$")
+
+
+def _is_key_line(line: str) -> bool:
+    m = _HEADING_RE.match(line)
+    if m:
+        return bool(_SECTION_KEY.search(m.group(2)))
+    m = _LABEL_RE.match(line)
+    return bool(m and _SECTION_KEY.search(m.group(1)))
+
+
 def _find_section(lines: list[str]) -> tuple[int, int]:
-    start = -1
-    level = 0
-    for i, line in enumerate(lines):
-        m = _HEADING_RE.match(line)
-        if m and _SECTION_KEY.search(m.group(2)):
-            start, level = i, len(m.group(1))
-            break
+    start = next((i for i, line in enumerate(lines) if _is_key_line(line)), -1)
     if start < 0:
         raise VariantError("no 'Boundless Care/Compassion' (or 无量慈悲/无量关怀) heading found")
+    head = _HEADING_RE.match(lines[start])
     end = len(lines)
     for j in range(start + 1, len(lines)):
-        m = _HEADING_RE.match(lines[j])
-        if m and len(m.group(1)) <= level:
+        if head:
+            m = _HEADING_RE.match(lines[j])
+            if m and len(m.group(1)) <= len(head.group(1)):
+                end = j
+                break
+        elif _LABEL_RE.match(lines[j]):
             end = j
             break
     return start, end
 
 
-def _new_heading(old: str, lang: str, heading: str) -> str:
-    m = _HEADING_RE.match(old)
-    assert m is not None
-    hashes, title = m.group(1), m.group(2)
+def _retitle(title: str, lang: str, heading: str) -> str:
     if lang == "zh":
         # zh headings drop English parentheticals so the English term cannot leak into the zh arm
         title = re.sub(r"\s*[（(][^）)]*[）)]", "", title).strip()
         word = {"care": "无量关怀", "compassion": "无量慈悲", "none": "公理四"}[heading]
-        title = re.sub(r"无量(慈悲|关怀)", word, title)
-    else:
-        word = {"care": "Boundless Care", "compassion": "Boundless Compassion", "none": "Axiom 4"}[
-            heading
-        ]
-        title = re.sub(r"Boundless\s+(Care|Compassion)", word, title, flags=re.IGNORECASE)
-    return f"{hashes} {title}"
+        return re.sub(r"无量(慈悲|关怀)", word, title)
+    word = {"care": "Boundless Care", "compassion": "Boundless Compassion", "none": "Axiom 4"}[
+        heading
+    ]
+    return re.sub(r"Boundless\s+(Care|Compassion)", word, title, flags=re.IGNORECASE)
+
+
+def _new_heading(old: str, lang: str, heading: str) -> str:
+    m = _HEADING_RE.match(old)
+    if m:
+        return f"{m.group(1)} {_retitle(m.group(2), lang, heading)}"
+    lm = _LABEL_RE.match(old)
+    assert lm is not None
+    return f"{_retitle(lm.group(1), lang, heading)}{lm.group(2)}"
 
 
 def make_variant(text: str, vid: str) -> str:
