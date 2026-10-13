@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+build/
+dist/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# experiment outputs and data
+runs/
+data/raw/
+third_party/
+
+# secrets and local state
+.env
+.env.*
+MOLTBOOK_HOME/
+*.local
