@@ -6,9 +6,12 @@ import argparse
 import sys
 from pathlib import Path
 
+from agent_governance_lab.backend.seeded_ollama import SeededOllamaBackend
 from agent_governance_lab.constitutions.variants import VARIANTS, VariantError, make_variant
-from agent_governance_lab.ledger import verify_ledger
+from agent_governance_lab.exp01 import read_records, run_condition, summarize, write_records
+from agent_governance_lab.ledger import Ledger, verify_ledger
 from agent_governance_lab.m0 import run_self_check
+from agent_governance_lab.probes import load_scenarios
 
 
 def _cmd_verify(args: argparse.Namespace) -> int:
@@ -42,6 +45,54 @@ def _cmd_self_check(args: argparse.Namespace) -> int:
     return 0 if all(r.ok for r in results) else 1
 
 
+def _cmd_run_exp01(args: argparse.Namespace) -> int:
+    out = Path(args.out)
+    scenarios = load_scenarios(Path(args.scenarios))
+    if args.condition == "C0":
+        axioms: str | None = None
+    else:
+        if not args.axioms:
+            print("FAIL: --axioms is required for conditions other than C0", file=sys.stderr)
+            return 1
+        try:
+            axioms = make_variant(Path(args.axioms).read_text(encoding="utf-8"), args.condition)
+        except VariantError as exc:
+            print(f"FAIL: {exc}", file=sys.stderr)
+            return 1
+    langs = ["en", "zh"] if args.lang == "both" else [args.lang]
+    ledger = Ledger(out / f"{args.condition}.ledger.jsonl")
+
+    def make_backend(seed: int) -> SeededOllamaBackend:
+        return SeededOllamaBackend(args.model, ledger, base_seed=seed)
+
+    records = run_condition(
+        args.condition,
+        axioms,
+        scenarios,
+        langs,
+        list(range(args.seeds)),
+        [0, 1],
+        make_backend,
+    )
+    write_records(records, out / f"{args.condition}.results.jsonl")
+    valid = sum(1 for r in records if r["valid"])
+    print(f"{args.condition}: {len(records)} calls, {valid} valid -> {out}")
+    return 0
+
+
+def _cmd_summarize_exp01(args: argparse.Namespace) -> int:
+    records = []
+    for path in args.results:
+        records.extend(read_records(Path(path)))
+    print("condition family lang    n  valid  primary_rate  invalid_rate")
+    for r in summarize(records):
+        print(
+            f"{r['condition']:<9} {r['family']:<6} {r['lang']:<4} {r['n']:>4} {r['n_valid']:>6}"
+            f"  {r['primary_rate']:>12.3f}  {r['invalid_rate']:>12.3f}"
+        )
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="agl", description=__doc__)
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -61,6 +112,20 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--base-url", default="http://127.0.0.1:11434")
     s.add_argument("--seed", type=int, default=0)
     s.set_defaults(func=_cmd_self_check)
+
+    r = sub.add_parser("run-exp01", help="experiment 1, path A: forced-choice probes")
+    r.add_argument("--model", required=True)
+    r.add_argument("--condition", required=True, help="C0 (no axioms) or a variant id")
+    r.add_argument("--axioms", help="markdown file with the axioms (not needed for C0)")
+    r.add_argument("--scenarios", default="data/probes/exp01_pilot.jsonl")
+    r.add_argument("--lang", choices=["en", "zh", "both"], default="en")
+    r.add_argument("--seeds", type=int, default=1)
+    r.add_argument("--out", required=True)
+    r.set_defaults(func=_cmd_run_exp01)
+
+    z = sub.add_parser("summarize-exp01", help="tabulate results files")
+    z.add_argument("results", nargs="+")
+    z.set_defaults(func=_cmd_summarize_exp01)
     return p
 
 

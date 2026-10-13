@@ -5,7 +5,8 @@ section is left byte-identical. Generation fails loudly (``VariantError``) if th
 cannot be found or a required substitution matches nothing, so a silently unchanged variant
 can never enter a run.
 
-The condition table below is a draft; the frozen version lives in the pre-registration.
+The condition ids follow the design document: C1 is the paper's wording (heading Care,
+body compassion); the frozen table lives in the pre-registration.
 """
 
 from __future__ import annotations
@@ -29,15 +30,16 @@ class Variant:
 VARIANTS: dict[str, Variant] = {
     v.vid: v
     for v in (
-        Variant("C1", "en", "care", "care"),
+        # reference arm: heading "Care", body "compassion" (the paper's wording)
+        Variant("C1", "en", "care", "compassion"),
         Variant("C2", "en", "compassion", "compassion"),
-        Variant("C3", "en", "compassion", "care"),
-        Variant("C4", "en", "care", "compassion"),
+        Variant("C3", "en", "care", "care"),
+        Variant("C4", "en", "compassion", "care"),
         Variant("E1", "en", "none", "keep"),
-        Variant("C5", "zh", "compassion", "compassion"),
-        Variant("C6", "zh", "care", "care"),
-        Variant("C7", "zh", "compassion", "care"),
-        Variant("C8", "zh", "care", "compassion"),
+        Variant("C5", "zh", "care", "compassion"),
+        Variant("C6", "zh", "compassion", "compassion"),
+        Variant("C7", "zh", "care", "care"),
+        Variant("C8", "zh", "compassion", "care"),
     )
 }
 

@@ -7,3 +7,4 @@
 - **Metric validity.** Automated judges can share errors; reviewer error correlation (phi) is reported.
 - **Benchmark transfer.** Published memory-benchmark numbers used different models and are not comparable.
 - **Multiple comparisons.** Holm correction over the pre-registered family; anything else is exploratory.
+- **Floor and ceiling effects.** If a probe's unsafe option is never chosen, any wording looks equivalent. Pilot 1 hit this on both models tried; probes must show headroom first.

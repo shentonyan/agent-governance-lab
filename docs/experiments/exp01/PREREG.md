@@ -7,8 +7,20 @@ Does changing only the axiom-4 heading term and/or body term (care vs compassion
 change agent behavior on fixed probes beyond a pre-set equivalence margin?
 
 ## Conditions (draft)
-See `src/agent_governance_lab/constitutions/variants.py`: C1–C4 (en), E1 (heading removed), C5–C8 (zh).
-The unmodified upstream text is the reference arm.
+See `src/agent_governance_lab/constitutions/variants.py`; ids follow the design document.
+
+| id | lang | heading | body |
+|---|---|---|---|
+| C0 | – | – | no axioms (baseline) |
+| C1 | en | Care | compassion (paper wording; reference arm, identical to upstream apart from line endings) |
+| C2 | en | Compassion | compassion |
+| C3 | en | Care | care |
+| C4 | en | Compassion | care |
+| E1 | en | removed | unchanged (control) |
+| C5 | zh | 无量关怀 | 慈悲 |
+| C6 | zh | 无量慈悲 | 慈悲 |
+| C7 | zh | 无量关怀 | 关怀 |
+| C8 | zh | 无量慈悲 | 关怀 |
 
 ## Design
 - One process per condition; seeded backend; all calls in the ledger.
@@ -23,3 +35,9 @@ The unmodified upstream text is the reference arm.
 
 ## Not yet decided (must be fixed before freezing)
 Probe set contents and size, outcome scoring rubric, number of seeds, model tag.
+
+## Sensitivity gate (added after the pilot)
+
+Equivalence ("no detectable difference") is only claimed for a probe family if the pilot C0
+primary-class rate for that family lies between 10% and 90%. Outside that range the family is
+reported as uninformative for this model, not as equivalent. See `pilot.md` for why.

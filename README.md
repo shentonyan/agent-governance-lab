@@ -10,7 +10,7 @@
   <img alt="python" src="https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white">
   <img alt="typing" src="https://img.shields.io/badge/mypy-strict-2a6db2">
   <img alt="lint" src="https://img.shields.io/badge/lint-ruff-261230">
-  <img alt="tests" src="https://img.shields.io/badge/tests-31%20passing-brightgreen">
+  <img alt="tests" src="https://img.shields.io/badge/tests-41%20passing-brightgreen">
   <img alt="status" src="https://img.shields.io/badge/status-M1%20core-orange">
 </p>
 
@@ -43,10 +43,11 @@ No experiment results exist yet. What exists is the core, and it has been run en
 |---|---|
 | Hash-chained run ledger | implemented, tested |
 | Seeded, loopback-only Ollama backend | implemented, tested, run against a real model |
-| Axiom-4 wording variants (en / zh) | en checked against the pinned upstream axioms file (C4 reproduces it byte for byte); zh tested on synthetic text only |
+| Axiom-4 wording variants (en / zh) | en checked against the pinned upstream axioms file (C1 reproduces it exactly, apart from line endings); zh tested on synthetic text only |
 | Statistics: Wilson, exact McNemar, Holm, cluster bootstrap, equivalence, phi | implemented, tested |
 | M0 self-check and end-to-end smoke run | passed on one machine, see below |
-| Experiments 1–3 | designed, not run; exp 1 has an unfrozen [draft pre-registration](docs/experiments/exp01/PREREG.md) |
+| Exp 1 probes and runner (path A) | implemented; 18-scenario pilot set (en/zh) |
+| Experiments 1–3 | designed; exp 1 has an unfrozen [draft pre-registration](docs/experiments/exp01/PREREG.md); exp 2–3 not started |
 
 ### M0 smoke result (2026-10-14)
 
@@ -62,6 +63,14 @@ One local model (`qwen2.5:7b`), Ollama 0.34.2, Windows, 64-token generations, 3 
 Scope: this shows seeding is repeatable on this machine and build. It says nothing about other
 hardware, other Ollama versions, longer generations, or other models. Details:
 [`docs/m0/results.md`](docs/m0/results.md).
+
+### Exp 1 pilot (2026-10-14): floor effect
+
+On 18 scenarios, `qwen2.5:7b` and `llama3.1:8b` chose the honest or supportive option in essentially
+every call, with and without the axioms (primary-class rate 0.000 in 17 of 18 cells; the one
+exception is 1 of 36 calls). So these probes cannot separate wording conditions, and an
+equivalence test on them would be meaningless. The probes need to be harder before the
+pre-registration is frozen. Details: [`docs/experiments/exp01/pilot.md`](docs/experiments/exp01/pilot.md).
 
 ## Quick start
 
@@ -79,6 +88,8 @@ python scripts\smoke_e2e.py --model qwen2.5:7b
 | `agl self-check --model <tag>` | Ollama reachable, model present, same-seed determinism |
 | `agl verify-ledger <file>` | recompute a ledger's hash chain |
 | `agl make-variants --axioms <md> --lang en\|zh --out <dir>` | write wording variants of axiom 4 |
+| `agl run-exp01 --model <tag> --condition C0\|C1.. --axioms <md> --out <dir>` | forced-choice probes under one condition |
+| `agl summarize-exp01 <results.jsonl>...` | tabulate results |
 
 ## Design rules
 
@@ -95,7 +106,8 @@ Known limits are tracked in [`docs/threats-to-validity.md`](docs/threats-to-vali
 
 - [x] M1: ledger, backend, variants, statistics, CLI, CI
 - [x] M0 smoke on one machine
-- [ ] Fix probe set and scoring rubric; freeze exp 1 pre-registration
+- [x] Exp 1 runner and pilot probe set
+- [ ] Harder probes with headroom; freeze exp 1 pre-registration
 - [ ] Exp 1: axiom-4 wording comparison
 - [ ] Exp 2: tiered memory prototype vs an external memory service
 - [ ] Exp 3: multi-stage skill review pipeline

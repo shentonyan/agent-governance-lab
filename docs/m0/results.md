@@ -17,4 +17,4 @@ it does not show repeatability across hardware or Ollama versions.
 
 ## Variant generation on the pinned upstream file
 
-English variants C1-C4 and E1 were generated from the axioms file at the pinned rules revision. C4 (heading Care, body compassion) is byte-identical to the original; the others differ only inside the axiom-4 section.
+English variants C1-C4 and E1 were generated from the axioms file at the pinned rules revision. C1 (heading Care, body compassion) is identical to the original apart from line endings (the Windows checkout is CRLF, the output LF); the others differ only inside the axiom-4 section.
