@@ -10,7 +10,7 @@
   <img alt="python" src="https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white">
   <img alt="typing" src="https://img.shields.io/badge/mypy-strict-2a6db2">
   <img alt="lint" src="https://img.shields.io/badge/lint-ruff-261230">
-  <img alt="tests" src="https://img.shields.io/badge/tests-46%20passing-brightgreen">
+  <img alt="tests" src="https://img.shields.io/badge/tests-65%20passing-brightgreen">
   <img alt="status" src="https://img.shields.io/badge/status-M1%20core-orange">
 </p>
 
@@ -47,7 +47,7 @@ No experiment results exist yet. What exists is the core, and it has been run en
 | Statistics: Wilson, exact McNemar, Holm, cluster bootstrap, equivalence, phi | implemented, tested |
 | M0 self-check and end-to-end smoke run | passed on one machine, see below |
 | Exp 1 probes and probability readout | implemented; 40-scenario F1 set (en), 12 exploratory F2/F3 |
-| Experiments 1–3 | exp 1: [pre-registration v1](docs/experiments/exp01/PREREG.md) frozen (tag `prereg-exp01-v1`) and run, see [results](docs/experiments/exp01/results.md); exp 2–3 not started |
+| Experiments 1–3 | exp 1: [pre-registration v1](docs/experiments/exp01/PREREG.md) frozen (tag `prereg-exp01-v1`) and run, see [results](docs/experiments/exp01/results.md); exp 2 and 3 have unfrozen drafts: [exp 2](docs/experiments/exp02/PREREG.md), [exp 3](docs/experiments/exp03/PREREG.md) |
 
 ### M0 smoke result (2026-10-14)
 
@@ -111,8 +111,8 @@ Known limits are tracked in [`docs/threats-to-validity.md`](docs/threats-to-vali
 - [x] Harder probes, probability readout, exp 1 pre-registration frozen
 - [x] Exp 1: axiom-4 wording comparison, English, one model (no difference detected on F1)
 - [ ] Exp 1 follow-ups: more headroom (other models or harder probes), Chinese variants
-- [ ] Exp 2: tiered memory prototype vs an external memory service
-- [ ] Exp 3: multi-stage skill review pipeline
+- [ ] Exp 2: tiered memory prototype vs an external memory service (B0 and an oracle B2o baseline run on synthetic sets; upstream pipeline, OpenViking, LoCoMo and an embedding retriever not done)
+- [ ] Exp 3: multi-stage skill review pipeline (pipeline and A/B/D set built, dev pilot run; hate-pattern category C, holdout, adaptive attacker not done)
 
 ## Layout
 

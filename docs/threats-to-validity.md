@@ -13,3 +13,8 @@
 - **Exp 1 model choice.** `qwen2.5:7b` is saturated under the probability readout and `gemma4:26b` could not be read (code-fence output). The primary model differs from the upstream default, so numbers do not compare with upstream.
 - **Exp 1 readout.** Logit-based readout measures the model's next-token preference for an answer letter, not what it would write in an open reply. Two option orders are averaged to cancel position bias, not to remove it from the model.
 - **Exp 1 post-hoc gate change.** The 10–90% sensitivity rule was relaxed for F1 after seeing pilot data; declared in `PREREG.md`.
+- **Exp 2 oracle metadata.** B2o receives the (entity, attribute) key and the channel label from the dataset generator. Its advantage on D2 and D4 shows what the mechanisms can do with perfect fact matching and labelling; the mislabelled D4 variant shows the advantage vanishing with wrong labels.
+- **Exp 2 saturation.** D3 is saturated for lexical retrieval at the default size; it does not yet separate backends. Synthetic strings are also unlike natural dialogue.
+- **Exp 2 missing arms.** The upstream distillation pipeline and OpenViking are not implemented, so the design's main predictions (P1, P3) are untested.
+- **Exp 3 prompt–test overlap.** The safety reviewer prompt lists the behaviour classes that category D tests. A first pilot hit a ceiling on the explicit tier; the implicit tier and near-miss skills were added after seeing it, so dev results are not independent of design choices.
+- **Exp 3 small n and one author.** Test proposals are hand-written by the harness author with no second annotator; dev has 28 bad proposals, so intervals are wide. Category C (hate patterns) is not yet built.

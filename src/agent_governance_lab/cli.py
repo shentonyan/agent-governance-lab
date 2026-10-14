@@ -217,10 +217,105 @@ def build_parser() -> argparse.ArgumentParser:
     g.add_argument("results", nargs="+")
     g.set_defaults(func=_cmd_gate_exp01)
 
+    r2 = sub.add_parser("run-exp02", help="score a memory backend on a synthetic dataset")
+    r2.add_argument("--dataset", required=True, choices=["D2", "D3", "D4", "D4M", "D5"])
+    r2.add_argument("--backend", required=True, choices=["B0", "B2o"])
+    r2.add_argument("--k", type=int, default=5)
+    r2.add_argument("--n", type=int, default=1000, help="writes for D5")
+    r2.add_argument("--seed", type=int, default=0)
+    r2.add_argument("--out", required=True)
+    r2.set_defaults(func=_cmd_run_exp02)
+
+    r3 = sub.add_parser("run-exp03", help="run one review arm over a proposal file")
+    r3.add_argument("--model", required=True)
+    r3.add_argument("--arm", required=True)
+    r3.add_argument("--proposals", required=True)
+    r3.add_argument("--axioms")
+    r3.add_argument("--seed", type=int, default=0)
+    r3.add_argument("--split", choices=["dev", "holdout", "all"], default="dev")
+    r3.add_argument("--out", required=True)
+    r3.set_defaults(func=_cmd_run_exp03)
+
+    s3 = sub.add_parser("summarize-exp03", help="metrics for review result files")
+    s3.add_argument("results", nargs="+")
+    s3.set_defaults(func=_cmd_summarize_exp03)
+
     z = sub.add_parser("summarize-exp01", help="tabulate results files")
     z.add_argument("results", nargs="+")
     z.set_defaults(func=_cmd_summarize_exp01)
     return p
+
+
+def _cmd_run_exp03(args: argparse.Namespace) -> int:
+    from agent_governance_lab.review.run import run_arm
+
+    path = run_arm(
+        args.model,
+        args.arm,
+        args.proposals,
+        args.out,
+        args.axioms,
+        seed=args.seed,
+        split=args.split,
+    )
+    print(f"{args.arm}: wrote {path}")
+    return 0
+
+
+def _cmd_summarize_exp03(args: argparse.Namespace) -> int:
+    from agent_governance_lab.review.metrics import error_phi, read_results, summarize
+
+    for res in args.results:
+        rows = read_results(res)
+        for split in (None, "dev", "holdout"):
+            s = summarize(rows, split)
+            rb, fr = s["recall_bad"], s["false_reject_good"]
+            print(
+                f"{rows[0]['arm'] if rows else '?'} [{s['split']}] n={s['n']} "
+                f"recall(C+D)={rb['rate']:.2f} [{rb['lo']:.2f},{rb['hi']:.2f}] "
+                f"false-reject(A+B)={fr['rate']:.2f} [{fr['lo']:.2f},{fr['hi']:.2f}] "
+                f"escalate={s['escalate_all']['rate']:.2f}"
+            )
+            if split is None:
+                for k, v in s["reject_by_subtype"].items():
+                    print(f"    {k:<28} reject {v['k']}/{v['n']}")
+                print(f"    phi(ethics,safety errors) = {error_phi(rows):.2f}")
+    return 0
+
+
+def _cmd_run_exp02(args: argparse.Namespace) -> int:
+    import json
+
+    from agent_governance_lab.memory.datasets import Dataset, make_d2, make_d3, make_d4, make_d5
+    from agent_governance_lab.memory.evaluate import evaluate
+
+    ds: Dataset
+    if args.dataset == "D5":
+        ds = make_d5(args.n, seed=args.seed)
+    elif args.dataset == "D4M":
+        ds = make_d4(mislabel=True, seed=args.seed)
+    elif args.dataset == "D4":
+        ds = make_d4(seed=args.seed)
+    elif args.dataset == "D3":
+        ds = make_d3(seed=args.seed)
+    else:
+        ds = make_d2(seed=args.seed)
+    res = evaluate(args.backend, ds, k=args.k)
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(res, indent=1, sort_keys=True), encoding="utf-8", newline="\n")
+    for kind, d in res["kinds"].items():
+        print(
+            f"{res['dataset']} {res['backend']} k={res['k']} {kind}: n={d['n']} "
+            f"hit={d['hit_rate']:.2f} [{d['hit_lo']:.2f},{d['hit_hi']:.2f}] "
+            f"top1_hit={d['top1_hit_rate']:.2f} stale/poison-only={d['stale_or_poison_only']} "
+            f"top1_bad={d['top1_bad']}"
+        )
+    print(
+        f"writes={res['n_writes']} write_s={res['write_seconds']:.2f} "
+        f"query p50={res['query_p50_ms']:.2f}ms p95={res['query_p95_ms']:.2f}ms"
+    )
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
