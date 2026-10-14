@@ -10,7 +10,7 @@
   <img alt="python" src="https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white">
   <img alt="typing" src="https://img.shields.io/badge/mypy-strict-2a6db2">
   <img alt="lint" src="https://img.shields.io/badge/lint-ruff-261230">
-  <img alt="tests" src="https://img.shields.io/badge/tests-41%20passing-brightgreen">
+  <img alt="tests" src="https://img.shields.io/badge/tests-46%20passing-brightgreen">
   <img alt="status" src="https://img.shields.io/badge/status-M1%20core-orange">
 </p>
 
@@ -46,8 +46,8 @@ No experiment results exist yet. What exists is the core, and it has been run en
 | Axiom-4 wording variants (en / zh) | en checked against the pinned upstream axioms file (C1 reproduces it exactly, apart from line endings); zh tested on synthetic text only |
 | Statistics: Wilson, exact McNemar, Holm, cluster bootstrap, equivalence, phi | implemented, tested |
 | M0 self-check and end-to-end smoke run | passed on one machine, see below |
-| Exp 1 probes and runner (path A) | implemented; 18-scenario pilot set (en/zh) |
-| Experiments 1–3 | designed; exp 1 has an unfrozen [draft pre-registration](docs/experiments/exp01/PREREG.md); exp 2–3 not started |
+| Exp 1 probes and probability readout | implemented; 40-scenario F1 set (en), 12 exploratory F2/F3 |
+| Experiments 1–3 | exp 1: [pre-registration v1](docs/experiments/exp01/PREREG.md) frozen (tag `prereg-exp01-v1`) and run, see [results](docs/experiments/exp01/results.md); exp 2–3 not started |
 
 ### M0 smoke result (2026-10-14)
 
@@ -70,7 +70,8 @@ On 18 scenarios, `qwen2.5:7b` and `llama3.1:8b` chose the honest or supportive o
 every call, with and without the axioms (primary-class rate 0.000 in 17 of 18 cells; the one
 exception is 1 of 36 calls). So these probes cannot separate wording conditions, and an
 equivalence test on them would be meaningless. The probes need to be harder before the
-pre-registration is frozen. Details: [`docs/experiments/exp01/pilot.md`](docs/experiments/exp01/pilot.md).
+pre-registration is frozen. Details: [`docs/experiments/exp01/pilot.md`](docs/experiments/exp01/pilot.md)
+(later pilots there led to a probability readout and a frozen pre-registration).
 
 ## Quick start
 
@@ -107,8 +108,9 @@ Known limits are tracked in [`docs/threats-to-validity.md`](docs/threats-to-vali
 - [x] M1: ledger, backend, variants, statistics, CLI, CI
 - [x] M0 smoke on one machine
 - [x] Exp 1 runner and pilot probe set
-- [ ] Harder probes with headroom; freeze exp 1 pre-registration
-- [ ] Exp 1: axiom-4 wording comparison
+- [x] Harder probes, probability readout, exp 1 pre-registration frozen
+- [x] Exp 1: axiom-4 wording comparison, English, one model (no difference detected on F1)
+- [ ] Exp 1 follow-ups: more headroom (other models or harder probes), Chinese variants
 - [ ] Exp 2: tiered memory prototype vs an external memory service
 - [ ] Exp 3: multi-stage skill review pipeline
 

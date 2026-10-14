@@ -117,3 +117,20 @@ Upstream pins: see `scripts/fetch_upstream.py`.
 | `src/agent_governance_lab/probes.py` | `2b6a2ab6276e14076fd4e72d78287b868b6b4d430ea578694c3f143a8d6dc2bd` |
 | `src/agent_governance_lab/exp01.py` | `16c0745fc48c1bebeea9035b1822868bad9da55d9fff5f734029aef58864ec05` |
 | `src/agent_governance_lab/constitutions/variants.py` | `8b9b690dad728bda07ac75d30eeca69ef9001fd0697d3a0ed04657f4e813da90` |
+
+## Erratum to v1 (written after the formal run, before interpreting any contrast)
+
+The condition table above has wrong rows. The authoritative definitions are the `VARIANTS` table
+in `src/agent_governance_lab/constitutions/variants.py` (its hash is frozen above), and the formal
+run used that code. Correct table (heading term / body term):
+
+| id | heading | body | note |
+|---|---|---|---|
+| C1 | Care | compassion | paper wording; reference arm |
+| C2 | Compassion | compassion | |
+| C3 | Care | care | |
+| C4 | Compassion | care | |
+| E1 | Care | compassion | C1 plus the boundary clause |
+
+The tag `prereg-exp01-v1` is not moved. Nothing else in v1 is changed by this erratum: probes,
+model, readout, contrasts and margin are as frozen.
