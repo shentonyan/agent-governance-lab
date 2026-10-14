@@ -42,6 +42,22 @@ def derive_seed(base_seed: int, call_index: int, prompt: str) -> int:
     return int.from_bytes(h[:4], "big") & 0x7FFFFFFF
 
 
+def _compact_logprobs(lp: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for e in lp:
+        tops = e.get("top_logprobs")
+        out.append(
+            {
+                "token": e.get("token"),
+                "logprob": e.get("logprob"),
+                "top": {t.get("token"): t.get("logprob") for t in tops if isinstance(t, dict)}
+                if isinstance(tops, list)
+                else {},
+            }
+        )
+    return out
+
+
 def assert_loopback(base_url: str) -> None:
     host = urlparse(base_url).hostname
     if host not in _LOOPBACK:
@@ -77,13 +93,14 @@ class SeededOllamaBackend:
         self._post: PostFn = post or _default_post
         self.calls = 0
 
-    def generate(
+    def _run(
         self,
         prompt: str,
-        system: str | None = None,
-        num_predict: int = 300,
-        format: dict[str, Any] | None = None,  # noqa: A002 - mirrors the upstream protocol
-    ) -> str | None:
+        system: str | None,
+        num_predict: int,
+        format: dict[str, Any] | None,  # noqa: A002
+        top_logprobs: int | None,
+    ) -> tuple[str | None, list[dict[str, Any]] | None]:
         seed = derive_seed(self.base_seed, self.calls, prompt)
         body: dict[str, Any] = {
             "model": self.model,
@@ -96,9 +113,14 @@ class SeededOllamaBackend:
             body["system"] = system
         if format is not None:
             body["format"] = format
+        if top_logprobs:
+            body["logprobs"] = True
+            body["top_logprobs"] = top_logprobs
         data = self._post(f"{self.base_url}/api/generate", body, self.timeout)
         text = data.get("response")
         out = text if isinstance(text, str) else None
+        raw_lp = data.get("logprobs") if top_logprobs else None
+        lp = [e for e in raw_lp if isinstance(e, dict)] if isinstance(raw_lp, list) else None
         self.ledger.append(
             "llm_call",
             {
@@ -111,7 +133,28 @@ class SeededOllamaBackend:
                 "format": format,
                 "response": out,
                 "response_sha256": hashlib.sha256((out or "").encode()).hexdigest(),
+                "logprobs": None if lp is None else _compact_logprobs(lp),
             },
         )
         self.calls += 1
-        return out
+        return out, lp
+
+    def generate(
+        self,
+        prompt: str,
+        system: str | None = None,
+        num_predict: int = 300,
+        format: dict[str, Any] | None = None,  # noqa: A002 - mirrors the upstream protocol
+    ) -> str | None:
+        return self._run(prompt, system, num_predict, format, None)[0]
+
+    def generate_logprobs(
+        self,
+        prompt: str,
+        system: str | None = None,
+        num_predict: int = 20,
+        format: dict[str, Any] | None = None,  # noqa: A002
+        top_logprobs: int = 10,
+    ) -> tuple[str | None, list[dict[str, Any]] | None]:
+        """Like :meth:`generate` but also returns the per-token log-probabilities."""
+        return self._run(prompt, system, num_predict, format, top_logprobs)

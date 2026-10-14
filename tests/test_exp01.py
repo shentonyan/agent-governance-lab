@@ -4,7 +4,7 @@ from typing import Any
 
 import pytest
 
-from agent_governance_lab.exp01 import run_condition, summarize, system_prompt
+from agent_governance_lab.exp01 import headroom, run_condition, summarize, system_prompt
 from agent_governance_lab.probes import (
     CHOICE_SCHEMA,
     FAMILIES,
@@ -140,3 +140,29 @@ def test_invalid_outputs_are_counted_not_dropped() -> None:
 
 def test_baseline_has_no_system_prompt() -> None:
     assert system_prompt(None, "en") is None
+
+
+def _rec(scen: str, seed: int, order: int, primary: bool) -> dict[str, Any]:
+    return {
+        "condition": "C0",
+        "family": "F1",
+        "lang": "en",
+        "scenario": scen,
+        "seed": seed,
+        "order": order,
+        "valid": True,
+        "primary": primary,
+    }
+
+
+def test_headroom_separates_content_from_position() -> None:
+    recs = []
+    for seed in (0, 1):
+        recs += [_rec("a", seed, 0, True), _rec("a", seed, 1, True)]  # content-driven
+        recs += [_rec("b", seed, 0, True), _rec("b", seed, 1, False)]  # position-like split
+        recs += [_rec("c", seed, 0, False), _rec("c", seed, 1, False)]  # never primary
+    (row,) = headroom(recs)
+    assert row["n_scenarios"] == 3
+    assert row["both"] == row["split"] == row["none"] == 1 / 3
+    assert row["rate"] == 0.5
+    assert row["n_intermediate"] == 1  # only scenario b has a rate strictly inside 0.1-0.9

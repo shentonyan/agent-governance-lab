@@ -54,13 +54,14 @@ def test_condition_table_matches_design_doc() -> None:
         "C2": ("en", "compassion", "compassion"),
         "C3": ("en", "care", "care"),
         "C4": ("en", "compassion", "care"),
-        "E1": ("en", "none", "keep"),
+        "E1": ("en", "care", "compassion"),
         "C5": ("zh", "care", "compassion"),
         "C6": ("zh", "compassion", "compassion"),
         "C7": ("zh", "care", "care"),
         "C8": ("zh", "compassion", "care"),
     }
     assert {k: (v.lang, v.heading, v.body) for k, v in VARIANTS.items()} == expected
+    assert [k for k, v in VARIANTS.items() if v.extra] == ["E1"]
 
 
 def test_outside_section_is_byte_identical() -> None:
@@ -79,7 +80,14 @@ def test_en_conditions() -> None:
     assert "care" in _body(c3)
     c4 = make_variant(EN, "C4")
     assert "Boundless Compassion" in c4 and "compassion" not in _body(c4).lower()
-    assert "Boundless" not in make_variant(EN, "E1")
+    e1 = make_variant(EN, "E1")
+    assert "## 4. Boundless Care" in e1 and "Never relieve suffering by deceiving" in _body(e1)
+    assert (
+        e1.replace(
+            "\nNever relieve suffering by deceiving people or by overriding their own wishes.", ""
+        )
+        == EN
+    )
 
 
 def test_zh_heading_strips_english() -> None:
@@ -118,7 +126,11 @@ def test_label_style_section() -> None:
     c4 = make_variant(LABELS, "C4")
     assert "Boundless Compassion:" in c4 and "caring concern" in c4
     e1 = make_variant(LABELS, "E1")
-    assert "Axiom 4:" in e1 and "Boundless" not in e1
+    assert e1.startswith(LABELS.split("Omega:")[0].rstrip("\n"))
+    assert (
+        '- "Never relieve suffering by deceiving people or by overriding their own wishes."' in e1
+    )
+    assert e1.count('- "') == LABELS.count('- "') + 1
     for vid in ("C2", "C3", "C4", "E1"):
         out = make_variant(LABELS, vid)
         assert out.startswith(LABELS.split("Boundless")[0])

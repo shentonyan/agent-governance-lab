@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 from collections import defaultdict
 from collections.abc import Callable, Sequence
 from pathlib import Path
@@ -13,8 +14,10 @@ from agent_governance_lab.probes import (
     Scenario,
     build_prompt,
     is_primary,
+    letter_distribution,
     parse_choice,
 )
+from agent_governance_lab.stats import cluster_bootstrap_diff, equivalent
 
 PREAMBLE = {
     "en": "You are a helpful assistant. The following principles guide your behavior.\n\n",
@@ -110,3 +113,156 @@ def summarize(records: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
             }
         )
     return rows
+
+
+def headroom(records: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Sensitivity diagnostics per (condition, family, lang).
+
+    For every (scenario, seed) the two option orders are compared: ``both`` = the primary class
+    was chosen in both orders (content-driven), ``split`` = in exactly one order (consistent with
+    a position preference), ``none`` = in neither. ``rate`` is the pooled primary-class share.
+    """
+    cells: dict[tuple[str, str, str], dict[tuple[str, int], dict[int, bool]]] = defaultdict(
+        lambda: defaultdict(dict)
+    )
+    for r in records:
+        if r["valid"]:
+            cells[(r["condition"], r["family"], r["lang"])][(r["scenario"], r["seed"])][
+                r["order"]
+            ] = bool(r["primary"])
+    rows: list[dict[str, Any]] = []
+    for (cond, fam, lang), pairs in sorted(cells.items()):
+        both = split = none = 0
+        per_scen: dict[str, list[bool]] = defaultdict(list)
+        total = prim = 0
+        for (scen, _seed), by_order in pairs.items():
+            for v in by_order.values():
+                total += 1
+                prim += v
+                per_scen[scen].append(v)
+            if len(by_order) == 2:
+                k = sum(by_order.values())
+                both += k == 2
+                split += k == 1
+                none += k == 0
+        n_pairs = both + split + none
+        inter = sum(1 for vs in per_scen.values() if 0.1 <= sum(vs) / len(vs) <= 0.9)
+        rows.append(
+            {
+                "condition": cond,
+                "family": fam,
+                "lang": lang,
+                "n_scenarios": len(per_scen),
+                "rate": prim / total if total else float("nan"),
+                "n_intermediate": inter,
+                "both": both / n_pairs if n_pairs else float("nan"),
+                "split": split / n_pairs if n_pairs else float("nan"),
+                "none": none / n_pairs if n_pairs else float("nan"),
+            }
+        )
+    return rows
+
+
+class LogprobGenerator(Protocol):
+    def generate_logprobs(
+        self,
+        prompt: str,
+        system: str | None = None,
+        num_predict: int = 20,
+        format: dict[str, Any] | None = None,  # noqa: A002
+        top_logprobs: int = 10,
+    ) -> tuple[str | None, list[dict[str, Any]] | None]: ...
+
+
+def run_condition_probs(
+    condition: str,
+    axioms_text: str | None,
+    scenarios: Sequence[Scenario],
+    langs: Sequence[str],
+    orders: Sequence[int],
+    backend: LogprobGenerator,
+) -> list[dict[str, Any]]:
+    """Probability readout: one call per (scenario, lang, order); no sampling noise."""
+    records: list[dict[str, Any]] = []
+    for lang in langs:
+        system = system_prompt(axioms_text, lang)
+        for s in scenarios:
+            for order in orders:
+                p = build_prompt(s, lang, order)
+                _text, lp = backend.generate_logprobs(
+                    p.text, system=system, num_predict=20, format=CHOICE_SCHEMA
+                )
+                dist = letter_distribution(lp)
+                rec: dict[str, Any] = {
+                    "condition": condition,
+                    "scenario": s.sid,
+                    "family": s.family,
+                    "lang": lang,
+                    "order": order,
+                    "valid": dist is not None,
+                    "probs": None,
+                    "mass": None,
+                }
+                if dist is not None:
+                    by_letter, mass = dist
+                    rec["probs"] = {p.letter_to_class[k]: v for k, v in by_letter.items()}
+                    rec["mass"] = mass
+                records.append(rec)
+    return records
+
+
+def logodds_by_scenario(
+    records: Sequence[dict[str, Any]],
+    condition: str,
+    lang: str,
+    num: str,
+    den: str,
+    floor: float = 1e-6,
+) -> dict[str, float]:
+    """Mean over option orders of log(P(num)/P(den)) per scenario (cancels position bias)."""
+    acc: dict[str, list[float]] = defaultdict(list)
+    for r in records:
+        if r["condition"] == condition and r["lang"] == lang and r["valid"]:
+            pr = r["probs"]
+            if num in pr and den in pr:
+                acc[r["scenario"]].append(math.log(max(pr[num], floor) / max(pr[den], floor)))
+    return {k: sum(v) / len(v) for k, v in acc.items()}
+
+
+def compare_logodds(
+    records: Sequence[dict[str, Any]],
+    ref: str,
+    cond: str,
+    lang: str,
+    num: str,
+    den: str,
+    margin: float,
+    n_comparisons: int = 1,
+    n_boot: int = 10_000,
+    seed: int = 0,
+) -> dict[str, Any]:
+    """Paired scenario-level difference (cond - ref) in log-odds, Bonferroni-adjusted CI."""
+    a = logodds_by_scenario(records, cond, lang, num, den)
+    b = logodds_by_scenario(records, ref, lang, num, den)
+    common = sorted(set(a) & set(b))
+    if not common:
+        raise ValueError("no scenarios in common between the two conditions")
+    res = cluster_bootstrap_diff(
+        [a[k] for k in common],
+        [b[k] for k in common],
+        common,
+        n_boot=n_boot,
+        seed=seed,
+        alpha=0.05 / n_comparisons,
+    )
+    return {
+        "ref": ref,
+        "cond": cond,
+        "lang": lang,
+        "n": len(common),
+        "diff": res.mean_diff,
+        "lo": res.lo,
+        "hi": res.hi,
+        "margin": margin,
+        "equivalent": equivalent(res.lo, res.hi, margin),
+    }

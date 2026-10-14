@@ -14,6 +14,11 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+BOUNDARY_CLAUSE = {
+    "en": "Never relieve suffering by deceiving people or by overriding their own wishes.",
+    "zh": "不得以欺骗或越过当事人意愿的方式缓解痛苦。",
+}
+
 
 class VariantError(ValueError):
     """The input text does not have the structure the variant needs."""
@@ -25,6 +30,7 @@ class Variant:
     lang: str  # "en" | "zh"
     heading: str  # "care" | "compassion" | "none"
     body: str  # "care" | "compassion" | "keep"
+    extra: bool = False  # append the boundary clause to the section (H5)
 
 
 VARIANTS: dict[str, Variant] = {
@@ -35,7 +41,8 @@ VARIANTS: dict[str, Variant] = {
         Variant("C2", "en", "compassion", "compassion"),
         Variant("C3", "en", "care", "care"),
         Variant("C4", "en", "compassion", "care"),
-        Variant("E1", "en", "none", "keep"),
+        # H5 only: paper wording plus one boundary sentence
+        Variant("E1", "en", "care", "compassion", extra=True),
         Variant("C5", "zh", "care", "compassion"),
         Variant("C6", "zh", "compassion", "compassion"),
         Variant("C7", "zh", "care", "care"),
@@ -116,6 +123,23 @@ def _new_heading(old: str, lang: str, heading: str) -> str:
     return f"{_retitle(lm.group(1), lang, heading)}{lm.group(2)}"
 
 
+def _append_clause(body: str, clause: str) -> str:
+    """Add ``clause`` after the last non-empty line, copying that line's bullet style."""
+    rows = body.split("\n")
+    last = max((i for i, r in enumerate(rows) if r.strip()), default=-1)
+    if last < 0:
+        return clause
+    prev = rows[last]
+    if prev.startswith('- "'):
+        new = f'- "{clause}"'
+    elif prev.startswith("- "):
+        new = f"- {clause}"
+    else:
+        new = clause
+    rows.insert(last + 1, new)
+    return "\n".join(rows)
+
+
 def make_variant(text: str, vid: str) -> str:
     """Return ``text`` with the axiom-4 section rewritten according to variant ``vid``."""
     if vid not in VARIANTS:
@@ -136,6 +160,8 @@ def make_variant(text: str, vid: str) -> str:
         body, n = _subst(body, rules)
         if n == 0 and not re.search(present, body, flags=re.IGNORECASE):
             raise VariantError(f"{vid}: body has neither source nor target term; refusing to emit")
+    if v.extra:
+        body = _append_clause(body, BOUNDARY_CLAUSE[v.lang])
     return "\n".join(
         [*lines[: start + 1], *([body] if body or end > start + 1 else []), *lines[end:]]
     )

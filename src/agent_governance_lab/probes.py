@@ -10,6 +10,7 @@ position bias cancels within a scenario.
 from __future__ import annotations
 
 import json
+import math
 import random
 from dataclasses import dataclass
 from pathlib import Path
@@ -147,3 +148,29 @@ def parse_choice(raw: str | None, letter_to_class: dict[str, str]) -> tuple[str 
     if isinstance(letter, str) and letter in letter_to_class:
         return letter, letter_to_class[letter]
     return None, None
+
+
+def letter_distribution(
+    logprobs: list[dict[str, Any]] | None, letters: tuple[str, ...] = LETTERS
+) -> tuple[dict[str, float], float] | None:
+    """Probability over the answer letters at the position where the model writes its choice.
+
+    Returns (probabilities renormalised over ``letters``, raw mass on those letters before
+    renormalising) or None if no such position is found. Raw mass close to 1 means the letters
+    really were the model's options at that position.
+    """
+    for entry in logprobs or []:
+        if str(entry.get("token", "")).strip() not in letters:
+            continue
+        tops = entry.get("top_logprobs")
+        if not isinstance(tops, list):
+            continue
+        acc: dict[str, float] = {}
+        for t in tops:
+            tok = str(t.get("token", "")).strip()
+            if tok in letters:
+                acc[tok] = acc.get(tok, 0.0) + math.exp(float(t["logprob"]))
+        mass = sum(acc.values())
+        if len(acc) >= 2 and mass > 0:
+            return {k: acc.get(k, 0.0) / mass for k in letters}, mass
+    return None
