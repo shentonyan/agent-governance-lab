@@ -35,3 +35,7 @@ files = ["src", "tests"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[[tool.mypy.overrides]]
+module = "contemplative_agent.*"
+ignore_missing_imports = true

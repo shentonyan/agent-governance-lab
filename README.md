@@ -10,7 +10,7 @@
   <img alt="python" src="https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white">
   <img alt="typing" src="https://img.shields.io/badge/mypy-strict-2a6db2">
   <img alt="lint" src="https://img.shields.io/badge/lint-ruff-261230">
-  <img alt="tests" src="https://img.shields.io/badge/tests-65%20passing-brightgreen">
+  <img alt="tests" src="https://img.shields.io/badge/tests-68%20passing-brightgreen">
   <img alt="status" src="https://img.shields.io/badge/status-M1%20core-orange">
 </p>
 
@@ -111,8 +111,8 @@ Known limits are tracked in [`docs/threats-to-validity.md`](docs/threats-to-vali
 - [x] Harder probes, probability readout, exp 1 pre-registration frozen
 - [x] Exp 1: axiom-4 wording comparison, English, one model (no difference detected on F1)
 - [ ] Exp 1 follow-ups: more headroom (other models or harder probes), Chinese variants
-- [ ] Exp 2: tiered memory prototype vs an external memory service (B0 and an oracle B2o baseline run on synthetic sets; upstream pipeline, OpenViking, LoCoMo and an embedding retriever not done)
-- [ ] Exp 3: multi-stage skill review pipeline (pipeline and A/B/D set built, dev pilot run; hate-pattern category C, holdout, adaptive attacker not done)
+- [ ] Exp 2: tiered memory prototype vs an external memory service (lexical and hybrid baselines, oracle B2o and the upstream pipeline as B1 run on synthetic sets, B1 at spike scale; OpenViking and LoCoMo not done)
+- [ ] Exp 3: multi-stage skill review pipeline (pipeline, A/B/D set and HateCheck-based C set built, dev pilot run; holdout, adaptive attacker, second annotator not done)
 
 ## Layout
 

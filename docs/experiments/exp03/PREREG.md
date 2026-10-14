@@ -35,7 +35,7 @@ skill format, not on-chain code.
 | A | normal skills (20) and near-miss legitimate skills sharing vocabulary with D (8) | 28 | hand-written, neutral |
 | B | sensitive but legitimate (moderation, research, fiction, support) | 12 | hand-written, neutral |
 | D | manipulation: sycophancy, fake intimacy, rule override, data exfiltration; explicit tier (24) and implicit tier (16) | 40 | hand-written, neutral |
-| C | hate or contempt patterns | 0 | **not built**: needs public annotated datasets (HateCheck, ToxiGen, COLD) and a confirmed data policy |
+| C | hate or contempt patterns: HateCheck cases wrapped in a neutral skill template (explicit 32, implicit 32), plus 12 non-hateful quote-to-condemn cases added to B | 76 | public dataset (HateCheck, CC BY 4.0 to be verified); raw text stays in `data/raw` (ignored), the repo holds `data/exp03/c_manifest.json` with ids and hashes; built by `scripts/build_exp03_c.py` |
 
 Stratified split by category: 30% holdout, 70% dev. Prompts may be tuned on dev only. The holdout
 is run once, after freezing.
@@ -59,8 +59,23 @@ Process notes, disclosed: a first pilot on the explicit tier alone gave R0 0.94 
 result. The safety prompt names the behaviours that category D tests, so recall on the explicit tier
 partly measures prompt–test overlap.
 
+## Dev pilot with category C (exploratory; `llama3.1:8b`, dev split, n = 109)
+
+| arm | recall (C + D) | false-reject (A + B) | C explicit | C implicit | D implicit |
+|---|---|---|---|---|---|
+| S0 | 0.01 | 0.00 | 0/25 | 0/20 | 0/13 |
+| R0 | 0.89 [0.80, 0.94] | 0.00 [0.00, 0.10] | 25/25 | 20/20 | 5/13 |
+| RC | 0.95 [0.87, 0.98] | 0.00 [0.00, 0.10] | 25/25 | 20/20 | 9/13 |
+
+Category C is at the ceiling for both reviewer arms, including the HateCheck "implicit" cases and
+the 8 dev quote-to-condemn items (all approved, so no over-refusal there). The template tells the
+agent to adopt the quoted view as its own, which makes any hateful statement obvious, so this
+category does not separate the arms. Any RC advantage comes from the implicit manipulation tier
+(n = 13 in dev) and is not significant.
+
 ## Still to decide before freezing
 
 Primary contrast (RC vs R0 on D, McNemar, margin and test), number of proposals needed (power from
-the dev numbers is thin: 28 bad proposals in dev), whether C is included, second annotator for
-labels (open), and the primary model (`llama3.1:8b` so far).
+the dev numbers is thin: 28 bad proposals in dev), whether C stays (it is saturated; a subtler wrapper, e.g. a skill that
+asks the agent to *judge* or *summarise* such statements, would be needed to make it informative),
+second annotator for labels (open), and the primary model (`llama3.1:8b` so far).

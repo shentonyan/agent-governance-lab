@@ -5,7 +5,7 @@ from __future__ import annotations
 import time
 from typing import Any
 
-from agent_governance_lab.memory.backends import BACKENDS, Backend
+from agent_governance_lab.memory.backends import Backend, make_backend
 from agent_governance_lab.memory.datasets import Dataset
 from agent_governance_lab.stats import wilson
 
@@ -15,12 +15,19 @@ def _pct(xs: list[float], q: float) -> float:
     return s[min(len(s) - 1, int(q * len(s)))] if s else float("nan")
 
 
-def evaluate(backend_id: str, ds: Dataset, k: int = 5) -> dict[str, Any]:
-    be: Backend = BACKENDS[backend_id]()
+def evaluate(
+    backend_id: str, ds: Dataset, k: int = 5, embed: Any = None, backend: Backend | None = None
+) -> dict[str, Any]:
+    be: Backend = backend if backend is not None else make_backend(backend_id, embed)
     t0 = time.perf_counter()
     for e in ds.writes:
         be.write(e)
     write_s = time.perf_counter() - t0
+    fin = getattr(be, "finalize", None)
+    t_fin = time.perf_counter()
+    if callable(fin):
+        fin()
+    finalize_s = time.perf_counter() - t_fin
 
     per_kind: dict[str, dict[str, int]] = {}
     lat: list[float] = []
@@ -59,6 +66,7 @@ def evaluate(backend_id: str, ds: Dataset, k: int = 5) -> dict[str, Any]:
         "k": k,
         "n_writes": len(ds.writes),
         "write_seconds": write_s,
+        "finalize_seconds": finalize_s,
         "query_p50_ms": _pct(lat, 0.5) * 1000,
         "query_p95_ms": _pct(lat, 0.95) * 1000,
         "kinds": {},

@@ -218,8 +218,10 @@ def build_parser() -> argparse.ArgumentParser:
     g.set_defaults(func=_cmd_gate_exp01)
 
     r2 = sub.add_parser("run-exp02", help="score a memory backend on a synthetic dataset")
-    r2.add_argument("--dataset", required=True, choices=["D2", "D3", "D4", "D4M", "D5"])
-    r2.add_argument("--backend", required=True, choices=["B0", "B2o"])
+    r2.add_argument("--dataset", required=True, choices=["D2", "D3", "D3H", "D4", "D4M", "D5"])
+    r2.add_argument("--backend", required=True, choices=["B0", "B2o", "B0h", "B2oh", "B1"])
+    r2.add_argument("--model", default="qwen2.5:7b", help="generator for B1")
+    r2.add_argument("--scale", choices=["default", "small"], default="default")
     r2.add_argument("--k", type=int, default=5)
     r2.add_argument("--n", type=int, default=1000, help="writes for D5")
     r2.add_argument("--seed", type=int, default=0)
@@ -229,7 +231,7 @@ def build_parser() -> argparse.ArgumentParser:
     r3 = sub.add_parser("run-exp03", help="run one review arm over a proposal file")
     r3.add_argument("--model", required=True)
     r3.add_argument("--arm", required=True)
-    r3.add_argument("--proposals", required=True)
+    r3.add_argument("--proposals", required=True, nargs="+")
     r3.add_argument("--axioms")
     r3.add_argument("--seed", type=int, default=0)
     r3.add_argument("--split", choices=["dev", "holdout", "all"], default="dev")
@@ -289,18 +291,40 @@ def _cmd_run_exp02(args: argparse.Namespace) -> int:
     from agent_governance_lab.memory.datasets import Dataset, make_d2, make_d3, make_d4, make_d5
     from agent_governance_lab.memory.evaluate import evaluate
 
+    small = args.scale == "small"
     ds: Dataset
     if args.dataset == "D5":
         ds = make_d5(args.n, seed=args.seed)
     elif args.dataset == "D4M":
-        ds = make_d4(mislabel=True, seed=args.seed)
+        ds = make_d4(15 if small else 40, 100 if small else 500, mislabel=True, seed=args.seed)
     elif args.dataset == "D4":
-        ds = make_d4(seed=args.seed)
+        ds = make_d4(15 if small else 40, 100 if small else 500, seed=args.seed)
     elif args.dataset == "D3":
-        ds = make_d3(seed=args.seed)
+        ds = make_d3(20 if small else 50, 100 if small else 2000, seed=args.seed)
+    elif args.dataset == "D3H":
+        ds = make_d3(20 if small else 50, 100 if small else args.n, seed=args.seed, hard=True)
     else:
-        ds = make_d2(seed=args.seed)
-    res = evaluate(args.backend, ds, k=args.k)
+        ds = make_d2(15 if small else 40, 100 if small else 1000, seed=args.seed)
+    embed = None
+    if args.backend.endswith("h"):
+        from agent_governance_lab.memory.hybrid import ollama_embedder
+
+        embed = ollama_embedder()
+    be = None
+    if args.backend == "B1":
+        from agent_governance_lab.memory.b1 import B1
+        from agent_governance_lab.memory.hybrid import ollama_embedder
+
+        out_dir = Path(args.out).parent
+        out_dir.mkdir(parents=True, exist_ok=True)
+        gen = SeededOllamaBackend(
+            args.model, Ledger(out_dir / f"{ds.name}.B1.ledger.jsonl"), temperature=0.0
+        )
+        be = B1(gen, ollama_embedder(), out_dir / f"{ds.name}.B1.work")
+    res = evaluate(args.backend, ds, k=args.k, embed=embed, backend=be)
+    if be is not None:
+        res["llm_calls"] = gen.calls
+        res["model"] = args.model
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(res, indent=1, sort_keys=True), encoding="utf-8", newline="\n")

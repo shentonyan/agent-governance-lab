@@ -31,7 +31,7 @@ def build_arm(aid: str, axioms_path: str | None) -> Arm:
 def run_arm(
     model: str,
     arm_id: str,
-    proposals_path: str,
+    proposals_paths: list[str],
     out_dir: str,
     axioms: str | None,
     seed: int = 0,
@@ -43,7 +43,12 @@ def run_arm(
     ledger = Ledger(out / f"{arm_id}.{split}.ledger.jsonl")
     backend = SeededOllamaBackend(model, ledger, base_seed=seed, temperature=0.0)
     res_path = out / f"{arm_id}.{split}.results.jsonl"
-    props = [p for p in load_proposals(proposals_path) if split == "all" or p.split == split]
+    props = [
+        p
+        for path in proposals_paths
+        for p in load_proposals(path)
+        if split == "all" or p.split == split
+    ]
     rows = [review(p, arm, backend) for p in props]
     with res_path.open("w", encoding="utf-8", newline="\n") as fh:
         for r in rows:

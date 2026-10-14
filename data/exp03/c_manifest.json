@@ -1,0 +1,538 @@
+{
+ "items": [
+  {
+   "functionality": "threat_dir_h",
+   "hatecheck_case_id": "674",
+   "pid": "C-HC00674",
+   "sha256": "63059bb59f50b5e14dc5fa956fe6b6664ab3bae93886ff2ef061b5e833812ffb",
+   "split": "dev"
+  },
+  {
+   "functionality": "threat_dir_h",
+   "hatecheck_case_id": "588",
+   "pid": "C-HC00588",
+   "sha256": "db9c90beb09d0242da57caeb1beddb00b48fe42a6022b95b08f02b08db1cda87",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_neg_emote_h",
+   "hatecheck_case_id": "85",
+   "pid": "C-HC00085",
+   "sha256": "da17255a9807b369204b1ef9d20a6a91a04fd6e7425fc56e3d879cdcc65c0588",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_neg_attrib_h",
+   "hatecheck_case_id": "252",
+   "pid": "C-HC00252",
+   "sha256": "4a355f203121828a56bcfef3775783f93d4bce4cfa24ccb2db7a36bc3d2933f3",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_neg_attrib_h",
+   "hatecheck_case_id": "162",
+   "pid": "C-HC00162",
+   "sha256": "517dc2b9a20effc32df8fd8ecd14525506d886bfe78d7ea42d2172dca060040f",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_dehum_h",
+   "hatecheck_case_id": "339",
+   "pid": "C-HC00339",
+   "sha256": "f17b4654ea41484ed15bb9897e8ca1958a4f7928a3d3a640ee067499705f7797",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_dehum_h",
+   "hatecheck_case_id": "390",
+   "pid": "C-HC00390",
+   "sha256": "5353943e3d750e67626fdafc6459e1f584d64adbe92ad0d9a3f9dd16bab61848",
+   "split": "dev"
+  },
+  {
+   "functionality": "threat_dir_h",
+   "hatecheck_case_id": "694",
+   "pid": "C-HC00694",
+   "sha256": "d34d5e7b0705bc86027394ec452a35f83439d45acca4e6f2f5a1425d081647e6",
+   "split": "dev"
+  },
+  {
+   "functionality": "threat_dir_h",
+   "hatecheck_case_id": "695",
+   "pid": "C-HC00695",
+   "sha256": "ccb81dee98dc6f28b43b4eef079fd5558a7b0c1b03d09c3171c9ac84bdde9547",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_neg_emote_h",
+   "hatecheck_case_id": "60",
+   "pid": "C-HC00060",
+   "sha256": "b9ee65f936a67c75a7296194ef8cf4c0de7f262378a88962e14d57c211338a93",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_dehum_h",
+   "hatecheck_case_id": "401",
+   "pid": "C-HC00401",
+   "sha256": "08bd76dc991bfe6ba367a3094a5c963f770ee34e63d522bd85e2df757e8dceb5",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_dehum_h",
+   "hatecheck_case_id": "349",
+   "pid": "C-HC00349",
+   "sha256": "177ea7fb62bfff66b9f275ce8e414afc40f1a01433521452d746269970225bb9",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_neg_emote_h",
+   "hatecheck_case_id": "135",
+   "pid": "C-HC00135",
+   "sha256": "65287e034d2c56009e5518f133ae1501ffe3ca7937d3aed9bd19e0b2afacf175",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_dehum_h",
+   "hatecheck_case_id": "329",
+   "pid": "C-HC00329",
+   "sha256": "08d286020302ee3ff51934c4e7e8bbe8d34a5fffc9d6f09d0a34699bc9a3293d",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_dehum_h",
+   "hatecheck_case_id": "406",
+   "pid": "C-HC00406",
+   "sha256": "3942fa795bb6c9f412c33c285f1672cfc52fffe0f0ce2f1c28e0a770c19d45a9",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_neg_emote_h",
+   "hatecheck_case_id": "68",
+   "pid": "C-HC00068",
+   "sha256": "8f4752ecf3e19e0a6b5b5883259a830c4d7965db3a441b3011f8ad7a35a17aa7",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_neg_emote_h",
+   "hatecheck_case_id": "120",
+   "pid": "C-HC00120",
+   "sha256": "e5fff0e081468be24a50f55f6eeb95edf5b5542326b3dbc9cadf346a2425c6a3",
+   "split": "dev"
+  },
+  {
+   "functionality": "threat_dir_h",
+   "hatecheck_case_id": "590",
+   "pid": "C-HC00590",
+   "sha256": "17866c85238da7651c4989e929f0b79de034caa2063b236bdbee18af34b92ace",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_neg_emote_h",
+   "hatecheck_case_id": "53",
+   "pid": "C-HC00053",
+   "sha256": "bc0771121fc8803f9825965ca8f550728a921727c6a6355abe9896ca93c119ee",
+   "split": "holdout"
+  },
+  {
+   "functionality": "threat_dir_h",
+   "hatecheck_case_id": "654",
+   "pid": "C-HC00654",
+   "sha256": "cb6ad50e031ce9b18c416611be5fc272dc6bad90247e821344d2c8aad949d58e",
+   "split": "holdout"
+  },
+  {
+   "functionality": "threat_dir_h",
+   "hatecheck_case_id": "563",
+   "pid": "C-HC00563",
+   "sha256": "51231054cc64faca290d6e9611cea88dd61a9626c809c7760578f76ff1d869ea",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_neg_attrib_h",
+   "hatecheck_case_id": "244",
+   "pid": "C-HC00244",
+   "sha256": "fdeb289cf4f4771d1d4a286cc086837c783c31a2f5d579e3238fcfdbbdc30023",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_neg_emote_h",
+   "hatecheck_case_id": "80",
+   "pid": "C-HC00080",
+   "sha256": "e531d08062ec1e7fd401c9797df794b3d56cda1f8b11f37f5fc6ffec170a19db",
+   "split": "holdout"
+  },
+  {
+   "functionality": "threat_dir_h",
+   "hatecheck_case_id": "636",
+   "pid": "C-HC00636",
+   "sha256": "d3fbb80f5b40eff021ac35d37696c45fdb9635604c5f8e5bf85257d0d5047390",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_neg_attrib_h",
+   "hatecheck_case_id": "230",
+   "pid": "C-HC00230",
+   "sha256": "70099f1b18377600a94b1c00e663f6f10a31a9fdaf301ba86b20810052872924",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_neg_emote_h",
+   "hatecheck_case_id": "99",
+   "pid": "C-HC00099",
+   "sha256": "cc6ca5d577214e30354e32529f7117cae7b4722bc9ede0c7314501ff8fd6e4e7",
+   "split": "dev"
+  },
+  {
+   "functionality": "threat_dir_h",
+   "hatecheck_case_id": "650",
+   "pid": "C-HC00650",
+   "sha256": "4782ce7688abdb8a239901f7bcf31b3d7738a0e403b57b41bf11af8e296c08ba",
+   "split": "dev"
+  },
+  {
+   "functionality": "threat_dir_h",
+   "hatecheck_case_id": "645",
+   "pid": "C-HC00645",
+   "sha256": "18f21da5f2511e66ef76485c87f2aece80301023a099abc9f4844ce4bc0dcca6",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_dehum_h",
+   "hatecheck_case_id": "309",
+   "pid": "C-HC00309",
+   "sha256": "b87b168b9e2fcacf3a3105d6b7b36749b66afcd8386ccc55f14d76e656a2e409",
+   "split": "dev"
+  },
+  {
+   "functionality": "threat_dir_h",
+   "hatecheck_case_id": "617",
+   "pid": "C-HC00617",
+   "sha256": "b048f88812d614f5beae7642f139c1a3991dc1bf082b1700a3e2595df7883404",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_dehum_h",
+   "hatecheck_case_id": "358",
+   "pid": "C-HC00358",
+   "sha256": "b6d41fdb7e41feeb14f4a994023d7819e1d19b43f4db5edcad8cd9126a2f0cf2",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_neg_attrib_h",
+   "hatecheck_case_id": "218",
+   "pid": "C-HC00218",
+   "sha256": "45bbdd6982d937b9c43e468498bbcfc8049865dac7ee146c97c8b48d182a0cab",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "497",
+   "pid": "C-HC00497",
+   "sha256": "6b99ea65a866bab6859dbdacbcfcd9cb2dd49985025784c5e9051aa94f471fd6",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "545",
+   "pid": "C-HC00545",
+   "sha256": "7321038faf0a90a105684365bd61cb0cbeb0dd083ee0c2ff3db7afe096943a20",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "528",
+   "pid": "C-HC00528",
+   "sha256": "42067237e2926a4792a43da6cdda8a6b7f44a1e02c4d025ea45177f9b0cd3e00",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "431",
+   "pid": "C-HC00431",
+   "sha256": "9ced4206ed8e6543f607b6750efa0b9eb0ebd305d89e6bf4108fe0e55da45307",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "552",
+   "pid": "C-HC00552",
+   "sha256": "cdcfefb7493f1407eb7425ff8384a6b953c1104dd81e6f72cdb600ffb59d4346",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "445",
+   "pid": "C-HC00445",
+   "sha256": "1d6b53ab696083c183f2b04e1848496a62c2493b41235686d2238201b20c12d3",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "529",
+   "pid": "C-HC00529",
+   "sha256": "61826732cf46f3bd93a9d9087da128a5dc9a55f209b3baa142d48bcffca57efd",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "436",
+   "pid": "C-HC00436",
+   "sha256": "cd28a4d4ec27c4b89c3f837a94c4c876cc1942e82146a9859c99e3386784e45e",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "491",
+   "pid": "C-HC00491",
+   "sha256": "19984fc64d75c970cb0127af53d073f62f25b0b54b58064c4f67c4d17e8419be",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "439",
+   "pid": "C-HC00439",
+   "sha256": "da98f078f4a68f3c1be5d776207f3c2544951892f05bfe8ec27e2429baf273b8",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "470",
+   "pid": "C-HC00470",
+   "sha256": "498f69bcd193f2055b5ecc78457db61a0a680925b646cded258ac754306883b7",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "459",
+   "pid": "C-HC00459",
+   "sha256": "ebb9029fa52f0f16c50a9e2f0c509678264bbc1624cddafc6538fb642294f1fa",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "437",
+   "pid": "C-HC00437",
+   "sha256": "6dc425587c5fdd4bd55a2365943411335e4ec704057cbedd2375f70b8dcd26bc",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "476",
+   "pid": "C-HC00476",
+   "sha256": "30f72b4c4a052fd27b8f0477641dd377ac4dd6f8afd1e7ec907cbe74cdc3499b",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "542",
+   "pid": "C-HC00542",
+   "sha256": "b94c3468e4a71d1d39ed673d5fbe93f1fd5a3b05b08caa93ba5ad4540020c417",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "423",
+   "pid": "C-HC00423",
+   "sha256": "52292c320fce8149097cafe70055b3cc174be25abbe19545b85e3adf071229e2",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "463",
+   "pid": "C-HC00463",
+   "sha256": "0a748bfdd39d23ab69fc1ae514ae155f42cf19a8891e1589cc0c8bae7f93615a",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "489",
+   "pid": "C-HC00489",
+   "sha256": "e1a1f68da652cf39a03dd4452888d1fe18291c1d248aead88083037851fe278c",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "426",
+   "pid": "C-HC00426",
+   "sha256": "cda7e631ffe992d03d188aaa668d610130ca91df937861ae7a05e96d4990bff6",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "518",
+   "pid": "C-HC00518",
+   "sha256": "04502f18ee344230492a49e6a62dd2f45becd942998b5c3419b1c25ab4fa3354",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "432",
+   "pid": "C-HC00432",
+   "sha256": "4c7881c0310bd50094958424b1d8b92326151c15327f1b77dac57a712ea77153",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "493",
+   "pid": "C-HC00493",
+   "sha256": "246525cf953ece0ab27be241919289ceaa3fc9e07077aca4b1c021518b53064a",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "446",
+   "pid": "C-HC00446",
+   "sha256": "49c96a9a22f7c5575285af0ca1ae22fa80044dbe73b49e87da2c899a01516201",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "524",
+   "pid": "C-HC00524",
+   "sha256": "efebf131253d1762f0b99f1502f698cb213bb1c7ef9bde44869e071112950c48",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "468",
+   "pid": "C-HC00468",
+   "sha256": "7fc8d3e2cf21ad6eb4b18396abc27f73acfaab9a3bceb287ba00350d444fbd42",
+   "split": "holdout"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "422",
+   "pid": "C-HC00422",
+   "sha256": "7f8df255f55d3fb8dda6f72ea74d814a82085429672be75740931fe1d760cd4c",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "494",
+   "pid": "C-HC00494",
+   "sha256": "64217ed2f418ef1518b564413ae77237965a9a91629eee96a57a35989aad0552",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "471",
+   "pid": "C-HC00471",
+   "sha256": "eb4875a70f5876de5866377642a50e1f82125e85447e509d6d875bc278be2ef0",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "428",
+   "pid": "C-HC00428",
+   "sha256": "d62953391fbbad3849b9e90eee2132ef65aefabde31f4d2095715e83185e1e4b",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "535",
+   "pid": "C-HC00535",
+   "sha256": "f8c834cf128cebf41a6ae91a9d909c9aa22f308dddf2340c0cc2f181c5ddd7c9",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "448",
+   "pid": "C-HC00448",
+   "sha256": "c5f43e9c83b94452d20c856243c1b7b3c4e0df0a189a32eb696983fbb3b9c2d1",
+   "split": "dev"
+  },
+  {
+   "functionality": "derog_impl_h",
+   "hatecheck_case_id": "429",
+   "pid": "C-HC00429",
+   "sha256": "bc12914d0c9263aa58ec696c91ec747352637527c8f901f9876da65da3a5e616",
+   "split": "holdout"
+  },
+  {
+   "functionality": "counter_quote_nh",
+   "hatecheck_case_id": "2721",
+   "pid": "B-HC02721",
+   "sha256": "b218fe03ade6418532d0e0ec3f6e36021043fb5816dcb5eeb84ae9eed5b4185d",
+   "split": "dev"
+  },
+  {
+   "functionality": "counter_quote_nh",
+   "hatecheck_case_id": "2591",
+   "pid": "B-HC02591",
+   "sha256": "f507141af58279e38893b7234938e4aa71eee5ba95a56d9b67c120f7f053f092",
+   "split": "dev"
+  },
+  {
+   "functionality": "counter_ref_nh",
+   "hatecheck_case_id": "2742",
+   "pid": "B-HC02742",
+   "sha256": "5bd5c8af253829ea70748f1ac6edbc8558d8f8f21d9998e78203a3ba4ff47663",
+   "split": "holdout"
+  },
+  {
+   "functionality": "counter_quote_nh",
+   "hatecheck_case_id": "2732",
+   "pid": "B-HC02732",
+   "sha256": "d42d54f5f38f46ebdb24890cfa94bead5b71b4c54488263f19aec53b2c74d0c5",
+   "split": "dev"
+  },
+  {
+   "functionality": "counter_quote_nh",
+   "hatecheck_case_id": "2659",
+   "pid": "B-HC02659",
+   "sha256": "532a9477bb94213b213f26323530617785923b2ddeb258d10be57f535ec06fef",
+   "split": "dev"
+  },
+  {
+   "functionality": "counter_ref_nh",
+   "hatecheck_case_id": "2907",
+   "pid": "B-HC02907",
+   "sha256": "b493de34cc77040d033d9c336ca3163770476e307b2f20ef25e72768fd3fde05",
+   "split": "holdout"
+  },
+  {
+   "functionality": "counter_ref_nh",
+   "hatecheck_case_id": "2893",
+   "pid": "B-HC02893",
+   "sha256": "5aa2721835aab8edf53ee27260c5bded969f8baa0033beb03298d181900f4629",
+   "split": "dev"
+  },
+  {
+   "functionality": "counter_ref_nh",
+   "hatecheck_case_id": "2817",
+   "pid": "B-HC02817",
+   "sha256": "ae02b9cf3ac91cec396c076a3c3f8447de890a3d0d1cf006de7573ec08430a3b",
+   "split": "dev"
+  },
+  {
+   "functionality": "counter_ref_nh",
+   "hatecheck_case_id": "2784",
+   "pid": "B-HC02784",
+   "sha256": "658520a3e8a30d854b9593fcfd63a6e09df9608cda47adba12ebb206b7e6314e",
+   "split": "holdout"
+  },
+  {
+   "functionality": "counter_ref_nh",
+   "hatecheck_case_id": "2885",
+   "pid": "B-HC02885",
+   "sha256": "0cea10dd72ba70581180362c738deaefe8daea0c3a5c44aeada197ceccd0bab0",
+   "split": "dev"
+  },
+  {
+   "functionality": "counter_ref_nh",
+   "hatecheck_case_id": "2755",
+   "pid": "B-HC02755",
+   "sha256": "b86f89b101b8294eefebd76db9b9691accb5eecbf2bc23b4bbd5b5c7043c9941",
+   "split": "dev"
+  },
+  {
+   "functionality": "counter_ref_nh",
+   "hatecheck_case_id": "2838",
+   "pid": "B-HC02838",
+   "sha256": "0aa46f85a4219a17410691e8e84b564a09b97422d5a61462f7746e3cf1a00c23",
+   "split": "holdout"
+  }
+ ],
+ "source": "HateCheck test_suite_cases.csv",
+ "source_sha256": "ecf0dc1e93fccc90b6f880e632b19e635c0f0a68b3157915a9e20b6938f121cf"
+}

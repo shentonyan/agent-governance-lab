@@ -12,3 +12,8 @@ revisions into `third_party/` (gitignored) for local use.
 | LoCoMo, HateCheck, ToxiGen, COLD | verify each | evaluation data, downloaded locally, not redistributed | record at use |
 
 Rule: if a license is unverified, the material is not committed here.
+
+## Datasets and models used by experiments 2 and 3
+
+- HateCheck (Rottger et al., 2021), https://github.com/paul-rottger/hatecheck-data. Downloaded by the user into data/raw (not committed); only case ids and hashes are in data/exp03/c_manifest.json. Licence to be confirmed against the repository before any redistribution.
+- nomic-embed-text, served by a local Ollama, used as the dense retriever. Model licence per its Ollama library page.

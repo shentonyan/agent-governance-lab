@@ -123,17 +123,24 @@ def _entity(i: int) -> str:
     return f"{FIRST[i % len(FIRST)]}-{i // len(FIRST) + 1}"
 
 
-def make_d3(n_keys: int = 50, n_filler: int = 2000, seed: int = 0) -> Dataset:
-    """Pinned facts: exact codes buried in filler; decoys mention codes without giving them."""
+def make_d3(n_keys: int = 50, n_filler: int = 2000, seed: int = 0, hard: bool = False) -> Dataset:
+    """Pinned facts: exact codes buried in filler; decoys mention codes without giving them.
+
+    ``hard=True``: the question is a paraphrase ("passcode opens") of the stored wording
+    ("access code"), and eight decoys per key mention the same entity without a code, so the
+    entity name alone does not find the key sentence.
+    """
     rng = random.Random(seed)
-    ds = Dataset("D3")
+    ds = Dataset("D3-hard" if hard else "D3")
     texts: list[Entry] = []
     for i in range(n_keys):
         ent, code = f"Project {_entity(i)}", _code(rng)
         texts.append(Entry(f"The access code for {ent} is {code}.", pinned=True))
-        ds.queries.append(
-            Query(f"D3-{i:04d}", f"What is the access code for {ent}?", code, "pinned")
-        )
+        q = f"Which passcode opens {ent}?" if hard else f"What is the access code for {ent}?"
+        ds.queries.append(Query(f"D3-{i:04d}", q, code, "pinned"))
+        if hard:
+            for _ in range(8):
+                texts.append(Entry(f"The courier left parcels at {ent} {rng.choice(DAYS)}."))
     for line in _filler(rng, n_filler):
         texts.append(Entry(line))
     for _ in range(n_keys):
@@ -188,6 +195,8 @@ def make_d4(
 ) -> Dataset:
     """Poison: an external channel states a conflicting value; trusted channel states the truth.
 
+    True and poisoned sentences use identical wording, so only the channel differs.
+
     ``mislabel=True`` puts the poisoned entries in the trusted channel (a labelling failure).
     """
     rng = random.Random(seed)
@@ -198,10 +207,8 @@ def make_d4(
         truth, fake = _code(rng), _code(rng)
         writes.append(Entry(f"Official record: the {attr} of {ent} is {truth}.", "trusted"))
         poison_channel = "trusted" if mislabel else "external"
-        for rep in range(2):
-            writes.append(
-                Entry(f"Update {rep + 1}: the {attr} of {ent} is {fake}.", poison_channel)
-            )
+        for _ in range(2):
+            writes.append(Entry(f"Official record: the {attr} of {ent} is {fake}.", poison_channel))
         ds.queries.append(
             Query(f"D4-{i:04d}", f"What is the {attr} of {ent}?", truth, "poison", None, (fake,))
         )

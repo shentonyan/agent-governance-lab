@@ -71,3 +71,14 @@ def test_b0_ignores_metadata() -> None:
 def test_evaluate_reports_timing_and_counts() -> None:
     res = evaluate("B0", make_d5(200))
     assert res["n_writes"] == 200 and res["query_p95_ms"] >= res["query_p50_ms"] >= 0
+
+
+def test_hard_d3_differs_from_easy_d3() -> None:
+    easy, hard = make_d3(5, 20, seed=0), make_d3(5, 20, seed=0, hard=True)
+    assert all("passcode" in q.text for q in hard.queries)
+    assert all("access code" in q.text for q in easy.queries)
+    decoys = [e for e in hard.writes if e.text.startswith("The courier left parcels")]
+    assert len(decoys) == 5 * 8
+    assert len(hard.writes) == len(easy.writes) + 40
+    key_len = len(tokenize("The access code for Project Alder-1 is AB-1234-CD."))
+    assert len(tokenize(decoys[0].text)) == key_len  # equal length: no BM25 length shortcut

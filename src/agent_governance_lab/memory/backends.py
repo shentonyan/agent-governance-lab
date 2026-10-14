@@ -12,8 +12,9 @@ attribute. Do not read B2o numbers as a property of a deployable system.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Any, Protocol
 
 from agent_governance_lab.memory.bm25 import BM25
 
@@ -29,6 +30,19 @@ class Entry:
     pinned: bool = False
 
 
+class Index(Protocol):
+    def add(self, text: str) -> int: ...
+
+    def remove(self, idx: int) -> None: ...
+
+    def search(
+        self, query: str, k: int = ..., weights: dict[int, float] | None = ...
+    ) -> list[tuple[int, float]]: ...
+
+
+IndexFactory = Callable[[], Index]
+
+
 class Backend(Protocol):
     def write(self, e: Entry) -> None: ...
 
@@ -38,8 +52,8 @@ class Backend(Protocol):
 class B0:
     name = "B0"
 
-    def __init__(self) -> None:
-        self.idx = BM25()
+    def __init__(self, factory: IndexFactory = BM25) -> None:
+        self.idx = factory()
         self.entries: list[Entry] = []
 
     def write(self, e: Entry) -> None:
@@ -53,9 +67,9 @@ class B0:
 class B2o:
     name = "B2o"
 
-    def __init__(self, pinned_slots: int = 2) -> None:
-        self.main = BM25()
-        self.pins = BM25()
+    def __init__(self, pinned_slots: int = 2, factory: IndexFactory = BM25) -> None:
+        self.main = factory()
+        self.pins = factory()
         self.main_entries: list[Entry] = []
         self.pin_entries: list[Entry] = []
         self.latest: dict[tuple[str, str], int] = {}  # key -> main index of newest entry
@@ -93,4 +107,20 @@ class B2o:
         return out[:k]
 
 
-BACKENDS = {"B0": B0, "B2o": B2o}
+BACKEND_IDS = ("B0", "B2o", "B0h", "B2oh")
+
+
+def make_backend(bid: str, embed: Any = None) -> Backend:
+    """B0/B2o are lexical; the *h variants add dense retrieval (hybrid) and need ``embed``."""
+    if bid in ("B0", "B2o"):
+        return B0() if bid == "B0" else B2o()
+    if bid in ("B0h", "B2oh"):
+        if embed is None:
+            raise ValueError(f"{bid} needs an embedder")
+        from agent_governance_lab.memory.hybrid import HybridIndex
+
+        def factory() -> Index:
+            return HybridIndex(embed)
+
+        return B0(factory) if bid == "B0h" else B2o(factory=factory)
+    raise ValueError(f"unknown backend {bid!r}")
